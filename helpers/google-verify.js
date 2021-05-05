@@ -11,11 +11,13 @@ const googleverify = async(idToken = '') => {
       //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
   });
 
-  const {name:nombre,
-         picture:imagen,
-         email:correo} = ticket.getPayload();
+  const {
+        name:nombre,
+        picture:img,
+        email:correo
+        } = ticket.getPayload();
 
-  return {nombre,imagen,correo};
+  return {nombre,img,correo};
 }
 
 module.exports ={

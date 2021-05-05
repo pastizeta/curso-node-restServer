@@ -1,11 +1,11 @@
-const {response} = require('express');
+const {response, request} = require('express');
 const Usuario = require('../models/usuario');
 const {generarJWT} = require('../helpers/generar-JWT');
 const bcryptjs = require('bcryptjs');
 const { googleverify } = require('../helpers/google-verify');
 
 
-const login = async(req, res = response) =>{
+const login = async(req = request, res = response) =>{
 
 
     const {correo, password} = req.body;
@@ -56,12 +56,14 @@ const login = async(req, res = response) =>{
 }
 
 
-const googleSignin = async(req, res = response) =>{
+const googleSignin = async(req = request, res = response) =>{
 
     const {id_token} = req.body;
 
-    const {correo,nombre,imagen} = await googleverify(id_token);
+    const {correo,nombre,img} = await googleverify(id_token);
 
+
+    //si ya existe en la BD
     let usuario = await Usuario.findOne({correo});
 
     if(!usuario){
@@ -69,8 +71,8 @@ const googleSignin = async(req, res = response) =>{
         const data ={
             nombre,
             correo,
-            password : ':P',
-            imagen,
+            password: ':P',
+            img,
             google:true
         };
 

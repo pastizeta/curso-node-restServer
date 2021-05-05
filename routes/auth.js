@@ -3,6 +3,8 @@ const { check } = require('express-validator');
 const { login,googleSignin } = require('../controllers/auth');
 const { validarCampos } = require('../middlewares/validar-campos');
 
+const {tieneRole} = require('../middlewares')
+
 const router = Router();
 
 //un post por que manda el correo y al constraseña
