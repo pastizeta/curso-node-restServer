@@ -10,11 +10,8 @@ const getCategorias = async(req, res = response) =>{
 
     const [total,categorias] = await Promise.all([
         Categoria.countDocuments(query),
-        Categoria.find(query,function(err,categoria){
-            Usuario.populate(categoria,{path:'usuario',select:'nombre correo'},function(err,categoria){
-                return categoria
-            })
-        })
+        Categoria.find(query)
+        .populate('usuario','nombre')
         .skip(Number(desde))
         .limit(Number(limite))
     ]);
@@ -24,9 +21,6 @@ const getCategorias = async(req, res = response) =>{
         total,
         categorias
     })
-
-    
-
 }
 
 //obtener categoria - populate() regresar el objeto de la categoria
