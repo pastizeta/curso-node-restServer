@@ -14,8 +14,10 @@ const {esRolevalido,emailExiste,existeUsuarioxID} = require('../helpers/db-valid
 
 const router = Router();
 
- //GET
-router.get('/', usuariosGet)
+ //GET - token valido
+router.get('/',[
+    validarJWT
+], usuariosGet)
 
 router.post('/', [
     check('nombre','El nombre es obligatorio').not().isEmpty(),
