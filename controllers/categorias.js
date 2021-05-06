@@ -29,12 +29,9 @@ const getCategoriaID = async( req, res = response) =>{
 
     const {id} = req.params;
 
-   await Categoria.findById(id,function(err,categoria){
-       Usuario.populate(categoria,{path:'usuario',select:"nombre correo"},function(err,categoria){
-            res.status(200).json({categoria})
-       });
-   });
+    const categoria = await Categoria.findById(id).populate('usuario','nombre');
 
+    res.json({categoria})
 }
 
 const crearCategoria = async(req, res = response) =>{
@@ -55,7 +52,7 @@ const crearCategoria = async(req, res = response) =>{
     //Generar la data a guardar
     const data = {
         nombre,
-        usuario: req.usuario._id //aqui se lee el id del token que es el que esta logeado en este momento
+        usuario: req.usuario._id //aqui se lee el id del token que puse le validador en el request que es el que esta logeado en este momento
     }
 
     const categoria = new Categoria(data);
@@ -73,18 +70,22 @@ const crearCategoria = async(req, res = response) =>{
 const actualizarCategoria = async(req,res = response) =>{
 
     const  { id } = req.params;
-    const { nombre } = req.body;
-    const { _id,usuario,...resto } = req.body;
+    const { _id,usuario,estado,...data } = req.body;
 
-    const categoriaBD = await Categoria.findOne({nombre});
+    data.nombre = data.nombre.toUpperCase();
+    data.usuario = req.usuario._id;
+
+    const categoriaBD = await Categoria.findOne({nombre: data.nombre});
 
     if(categoriaBD){
-        return res.json({
-            msg:`La categoria con nombre ${categoriaBD.nombre} ya existe`
-        });
+        if(categoriaBD._id != id ){
+            return res.json({
+                msg:`La categoria con nombre ${categoriaBD.nombre} ya existe`
+            });
+        }
     }
 
-    const categoria = await Categoria.findByIdAndUpdate(id,resto);
+    const categoria = await Categoria.findByIdAndUpdate(id,data,{new:true}); //new:true manda como resultado el objeto actualizado
 
     res.json({
         categoria
@@ -98,11 +99,9 @@ const borrarCategoria = async(req,res=response) =>{
 
     const {id} = req.params;
 
-    const categoria = await Categoria.findByIdAndUpdate(id,{estado:false});
+    const categoria = await Categoria.findByIdAndUpdate(id,{estado:false},{new:true});
 
-    res.json({
-        categoria
-    })
+    res.json({ categoria })
 
 }
 
