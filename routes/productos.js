@@ -27,11 +27,11 @@ router.get('/:id',[
 router.post('/',[
     validarJWT,
     check('nombre','El nombre del producto es obligatorio').not().isEmpty(),
-    check('precio','El precio es obligatorio').not().isEmpty(),
-    check('precio','El precio debe ser un numero').isNumeric(),
     check('categoria','El id de la categoria no es un id de mongo valido').isMongoId(),
     check('categoria').custom(existeCategoria),
-    check('descripcion','La descripcion es obligatoria').not().isEmpty(),
+    //check('precio','El precio es obligatorio').not().isEmpty(),
+    //check('precio','El precio debe ser un numero').isNumeric(),
+    //check('descripcion','La descripcion es obligatoria').not().isEmpty(),
     validarCampos
 ],crearProducto);
 
@@ -40,14 +40,14 @@ router.put('/:id',[
     validarJWT,
     check('id','no es un id de Mongo valido').isMongoId(),
     check('id').custom(existeProductoxID),
-    check('nombre','El nombre del producto es obligatorio').not().isEmpty(),
-    check('precio','El precio es obligatorio').not().isEmpty(),
-    check('precio','El precio debe ser un numero').isNumeric(),
-    check('categoria','El id de la categoria no es un id de mongo valido').isMongoId(),
-    check('categoria').custom(existeCategoria),
-    check('descripcion','La descripcion es obligatoria').not().isEmpty(),
     esAdminRol,
     validarCampos
+    //check('categoria','El id de la categoria no es un id de mongo valido').isMongoId(),
+    //check('categoria').custom(existeCategoria),
+    //check('nombre','El nombre del producto es obligatorio').not().isEmpty(),
+    //check('precio','El precio es obligatorio').not().isEmpty(),
+    //check('precio','El precio debe ser un numero').isNumeric(),
+    //check('descripcion','La descripcion es obligatoria').not().isEmpty(),
 ],actualizaProducto)
 
 

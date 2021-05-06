@@ -1,5 +1,7 @@
 const { response } = require('express');
-const { Producto } = require('../models');
+const { Producto, Categoria } = require('../models');
+const categoria = require('../models/categoria');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 
 const getProductos= async(req, res = response) =>{
@@ -37,11 +39,10 @@ const crearProducto = async(req,res=response)=>{
     }
 
     const data = {
+        ...resto,
         nombre,
         usuario: req.usuario._id, //se obtiene el id del request que se asigno en el token valido 
-        precio : resto.precio,
-        categoria : resto.categoria,
-        descripcion : resto.descripcion
+        
     }
 
     const producto = new Producto(data);
@@ -70,20 +71,41 @@ const actualizaProducto = async(req,res = response) =>{
     const { id } = req.params;
     const {_id,estado,usuario,...data} = req.body;
 
-    data.nombre = data.nombre.toUpperCase();
-    data.usuario = req.usuario._id;
 
-    const productoBD = await Producto.findOne({ nombre: data.nombre});
+    if (data.nombre){
+        data.nombre = data.nombre.toUpperCase();
+    }
 
-    if(productoBD){
-        if(productoBD._id != id ){
-
+    if(data.precio){
+        
+        if(!Number(data.precio)){
             return res.json({
-                msg:`El producto con nombre ${productoBD.nombre} ya existe con otro ID`
+                msg:`El precio debe ser un numero`
             })
         }
     }
+    
+    if(data.categoria){
 
+        if(ObjectId.isValid(data.categoria)){
+
+            const categoriaDB = await Categoria.findById(data.categoria)
+
+            if(!categoriaDB){
+                return res.json({
+                    msg:`La Categoria no es parte del catalogo`
+                })
+            }
+        }else{
+            return res.json({
+                msg:`El ID de la Categoria no es valido`
+            })
+        }
+
+        
+    }
+
+    data.usuario = req.usuario._id;
     
     const producto = await Producto.findByIdAndUpdate(id,data,{new:true});
 
