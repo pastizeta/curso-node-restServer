@@ -8,7 +8,8 @@ const { usuariosGet,
         usuariosPost,
         usuariosPut,
         usuariosPatch,
-        usuarioDelete} = require('../controllers/usuarios');
+        usuarioDelete,
+        usuarioGet } = require('../controllers/usuarios');
 const {esRolevalido,emailExiste,existeUsuarioxID} = require('../helpers/db-validators');
 
 
@@ -18,6 +19,8 @@ const router = Router();
 router.get('/',[
     validarJWT
 ], usuariosGet)
+
+
 
 router.post('/', [
     check('nombre','El nombre es obligatorio').not().isEmpty(),

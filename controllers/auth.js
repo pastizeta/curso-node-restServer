@@ -3,6 +3,7 @@ const Usuario = require('../models/usuario');
 const {generarJWT} = require('../helpers/generar-JWT');
 const bcryptjs = require('bcryptjs');
 const { googleverify } = require('../helpers/google-verify');
+const { insertaSesion } = require('../helpers/db-sesion');
 
 
 const login = async(req = request, res = response) =>{
@@ -40,9 +41,14 @@ const login = async(req = request, res = response) =>{
 
         //generar el JWT
         const token = await generarJWT(usuario.id);
+        
+        //guardar token en BD tabla -sessiones para validar contra el cliente
+        const sesion = await insertaSesion(usuario.id,token);
+
         res.json({
             usuario,
-            token
+            token,
+            sesion:sesion._id
         })
 
     } catch (error) {
