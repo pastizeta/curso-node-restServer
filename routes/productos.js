@@ -5,7 +5,8 @@ const { getProductos,
         crearProducto,
         getProductoxID,
         actualizaProducto,
-        borrarProducto } = require('../controllers/productos');
+        borrarProducto,
+        getProductosxCategoria } = require('../controllers/productos');
 
 const { validarJWT, validarCampos, esAdminRol } = require('../middlewares');
 const { existeCategoria,existeProductoxID } = require('../helpers/db-validators');
@@ -58,5 +59,12 @@ router.delete('/:id',[
     esAdminRol,
     validarCampos
 ],borrarProducto)
+
+//buscar productos por categoria
+router.get('/categoria/:id',[
+    check('id','no es un id de Mongo valido').isMongoId(),
+    check('id').custom(existeCategoria),
+    validarCampos
+],getProductosxCategoria)
 
 module.exports = router;

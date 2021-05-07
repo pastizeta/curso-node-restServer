@@ -127,10 +127,24 @@ const borrarProducto = async(req,res=response)=>{
 
 }
 
+const getProductosxCategoria = async (req,res=response) =>{
+    
+    const { id } = req.params;
+
+    const productos = await Producto.find( { categoria: ObjectId(id), estado:true } )
+                                    .populate('categoria','nombre')
+    
+    res.json({
+        results : ( productos ) ? [ productos ] : []
+    })
+}
+
+
 module.exports ={
     getProductos,
     crearProducto,
     getProductoxID,
     actualizaProducto,
-    borrarProducto
+    borrarProducto,
+    getProductosxCategoria
 }
