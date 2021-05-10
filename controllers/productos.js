@@ -14,6 +14,7 @@ const getProductos= async(req, res = response) =>{
         Producto.find(query)
         .populate('usuario','nombre')
         .populate('categoria','nombre')
+        .populate('subcategoria','nombre')
         .skip(Number(desde))
         .limit(Number(limite))
     ]);
@@ -58,7 +59,8 @@ const getProductoxID = async(req,res=response) =>{
 
     const producto = await Producto.findById(id)
                             .populate('categoria','nombre')
-                            .populate('usuario','nombre');
+                            .populate('usuario','nombre')
+                            .populate('subcategoria','nombre');
 
     res.status(200).json({
         producto
@@ -133,10 +135,25 @@ const getProductosxCategoria = async (req,res=response) =>{
 
     const productos = await Producto.find( { categoria: ObjectId(id), estado:true } )
                                     .populate('categoria','nombre')
+                                    .populate('subcategoria','nombre')
     
     res.json({
         results : ( productos ) ? [ productos ] : []
     })
+}
+
+const getProductosxsubcategoria = async( req, res = response) =>{
+    
+    const { id } = req.params;
+
+    const productos = await Producto.find( { subcategoria: ObjectId(id), estado:true } )
+                                    .populate('categoria','nombre')
+                                    .populate('subcategoria','nombre')
+
+    res.json({
+        results : (productos) ? [ productos ] : []
+    })                               
+
 }
 
 
@@ -146,5 +163,6 @@ module.exports ={
     getProductoxID,
     actualizaProducto,
     borrarProducto,
-    getProductosxCategoria
+    getProductosxCategoria,
+    getProductosxsubcategoria
 }

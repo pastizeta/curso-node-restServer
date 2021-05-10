@@ -1,7 +1,7 @@
 const { Schema,model} = require('mongoose');
 
 
-const CategoriaSchema = Schema({
+const SubcategoriaSchema = Schema({
      nombre:{
          type:String,
          required: [true,'El nombre es obligatorio'],
@@ -15,16 +15,13 @@ const CategoriaSchema = Schema({
     usuario:{
         type:Schema.Types.ObjectId,
         ref: 'Usuario',
-        required: true
-    },
-    subcategorias:[{
-            type:Schema.Types.ObjectId,
-            ref:'Subcategoria',
-            required:[true,'Las subcategorias son obligatorias']
-        }]
+        require: true
+    }
+
+
 });
 
 
 
 
-module.exports = model('Categoria',CategoriaSchema);
+module.exports = model('Subcategoria',SubcategoriaSchema);

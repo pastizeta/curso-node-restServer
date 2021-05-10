@@ -12,6 +12,7 @@ const getCategorias = async(req, res = response) =>{
         Categoria.countDocuments(query),
         Categoria.find(query)
         .populate('usuario','nombre')
+        .populate('subcategorias','nombre')
         .skip(Number(desde))
         .limit(Number(limite))
     ]);
@@ -29,7 +30,9 @@ const getCategoriaID = async( req, res = response) =>{
 
     const {id} = req.params;
 
-    const categoria = await Categoria.findById(id).populate('usuario','nombre');
+    const categoria = await Categoria.findById(id)
+                                     .populate('usuario','nombre')
+                                     .populate('subcategorias','nombre');
 
     res.json({categoria})
 }
@@ -38,6 +41,7 @@ const crearCategoria = async(req, res = response) =>{
     
     //obtenermos el nombre que nos mandan en el body del req que es el JSON
     const nombre = req.body.nombre.toUpperCase();
+    const { subcategorias } = req.body;
 
     //validamos si ya existe una categoria con ese nombre
     const categoriaDB = await Categoria.findOne({nombre});
@@ -52,7 +56,8 @@ const crearCategoria = async(req, res = response) =>{
     //Generar la data a guardar
     const data = {
         nombre,
-        usuario: req.usuario._id //aqui se lee el id del token que puse le validador en el request que es el que esta logeado en este momento
+        usuario: req.usuario._id, //aqui se lee el id del token que puse le validador en el request que es el que esta logeado en este momento
+        subcategorias
     }
 
     const categoria = new Categoria(data);
@@ -66,7 +71,6 @@ const crearCategoria = async(req, res = response) =>{
 }
 
 // actualizarCategoria recibiendo el nombre validar que el nuevo no existe
-
 const actualizarCategoria = async(req,res = response) =>{
 
     const  { id } = req.params;
@@ -94,7 +98,6 @@ const actualizarCategoria = async(req,res = response) =>{
 }
 
 //Borrar Categoria - cambiar estado a false
-
 const borrarCategoria = async(req,res=response) =>{
 
     const {id} = req.params;

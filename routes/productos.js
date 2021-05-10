@@ -6,10 +6,11 @@ const { getProductos,
         getProductoxID,
         actualizaProducto,
         borrarProducto,
-        getProductosxCategoria } = require('../controllers/productos');
+        getProductosxCategoria,
+        getProductosxsubcategoria } = require('../controllers/productos');
 
 const { validarJWT, validarCampos, esAdminRol } = require('../middlewares');
-const { existeCategoria,existeProductoxID } = require('../helpers/db-validators');
+const { existeCategoria,existeProductoxID,existesubCategoria } = require('../helpers/db-validators');
 
 
 const router = new Router();
@@ -30,6 +31,8 @@ router.post('/',[
     check('nombre','El nombre del producto es obligatorio').not().isEmpty(),
     check('categoria','El id de la categoria no es un id de mongo valido').isMongoId(),
     check('categoria').custom(existeCategoria),
+    check('subcategoria','El id de la sub-categoria no es un id de mongo valido').isMongoId(),
+    check('subcategoria').custom(existesubCategoria),
     //check('precio','El precio es obligatorio').not().isEmpty(),
     //check('precio','El precio debe ser un numero').isNumeric(),
     //check('descripcion','La descripcion es obligatoria').not().isEmpty(),
@@ -66,5 +69,11 @@ router.get('/categoria/:id',[
     check('id').custom(existeCategoria),
     validarCampos
 ],getProductosxCategoria)
+
+//buscar productos por subcategoria
+router.get('/subcategoria/:id',[
+    check('id','no es un id de Mongo valido').isMongoId(),
+    check('id').custom(existesubCategoria),
+],getProductosxsubcategoria)
 
 module.exports = router;

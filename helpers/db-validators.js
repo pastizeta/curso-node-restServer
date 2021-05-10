@@ -2,6 +2,7 @@ const Categoria = require('../models/categoria');
 const Role = require('../models/role');
 const Usuario = require('../models/usuario');
 const Producto = require('../models/producto');
+const subCategoria = require('../models/subcategoria');
 
 const esRolevalido = async(rol = '') =>{
     const existeRol = await Role.findOne({rol});
@@ -46,6 +47,18 @@ const existeCategoria = async(id) =>{
 
 }
 
+const existesubCategoria = async(id) =>{
+
+    //verificar si la categoria existe
+    const existesubCategoria = await subCategoria.findById(id);
+
+    if ( !existesubCategoria ){
+        throw new Error(`El id (sub-categoria): ${ id } no existe`)
+        
+    }
+
+}
+
 const existeProductoxID = async(id) =>{
 
     const existeProducto = await Producto.findById(id);
@@ -60,5 +73,6 @@ module.exports = {
     emailExiste,
     existeUsuarioxID,
     existeCategoria,
-    existeProductoxID
+    existeProductoxID,
+    existesubCategoria
 }

@@ -26,6 +26,11 @@ const ProductosSchema = Schema({
          ref:'Categoria',
          required:true
      },
+     subcategoria:{
+        type:Schema.Types.ObjectId,
+        ref:'Subcategoria',
+        required:true
+     },
      descripcion:{ type:String },
      disponible :{ type:Boolean, default:true }
 });

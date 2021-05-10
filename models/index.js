@@ -4,6 +4,7 @@ const Role = require('./role');
 const Server = require('./server');
 const Usuario = require('./usuario');
 const Sesion = require('./sesion');
+const Subcategoria = require('./subcategoria');
 
 
 
@@ -13,5 +14,6 @@ module.exports = {
     Role,
     Server,
     Usuario,
-    Sesion
+    Sesion,
+    Subcategoria
 }
