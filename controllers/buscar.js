@@ -9,7 +9,7 @@ const coleccionPermitidas=[
     'roles'
 ];
 
-const buscarProductos = async(termino='', res=response)=>{
+const buscarProductos = async(termino='', res=response, limite , desde )=>{
 
     const esMongoID = ObjectId.isValid(termino); //TRUE
 
@@ -24,11 +24,26 @@ const buscarProductos = async(termino='', res=response)=>{
     //busqueda por correo o nombre de categoria
     const regex = new RegExp( termino,'i' );
 
-    const producto = await Producto.find({ nombre:regex, estado:true })
-                                    .populate('categoria','nombre');     
+    const query = { nombre:regex, estado:true };
+
+    const [ total,productos ]  = await Promise.all([
+        Producto.countDocuments(query),
+        Producto.find({ nombre:regex, estado:true })
+        .populate('usuario','nombre')
+        .populate('categoria','nombre')
+        .populate('subcategoria','nombre')
+        .skip(Number(desde))
+        .limit(Number(limite))
+    ]);
+
+    /*const producto = await Producto.find({ nombre:regex, estado:true })
+                                    .populate('categoria','nombre')
+                                    .skip(Number(desde))
+                                    .limit(Number(limite));    */ 
 
     res.json({
-        results: producto
+        total,
+        results: productos
     })
 }
 
@@ -89,6 +104,7 @@ const buscarUsuarios = async(termino = '',res = response)=>{
 const buscar =(req, res = response)=>{
 
     const { coleccion,termino } = req.params;
+    const { limite = 5, desde = 0 } = req.query;
 
     if(!coleccionPermitidas.includes(coleccion)){
         return res.status(400).json({
@@ -105,7 +121,7 @@ const buscar =(req, res = response)=>{
             buscarCategorias(termino,res)
             break;
         case 'productos':
-            buscarProductos(termino,res)
+            buscarProductos(termino,res,limite,desde)
             break;
 
         default:
