@@ -152,10 +152,9 @@ const mostrarImagen = async(req, res=response)=>{
     // Limpiar imagenes previas
 
     if( modelo.img ){
-        // Hay que borrar la imagen del servidor
+
         const pathImagen = path.join( __dirname, '../uploads',coleccion,modelo.img );
         
-        //se valida si la imagen con la ruta de la coleccion existe, y si existe se borra
         if( fs.existsSync(pathImagen) ){
             
             return res.sendFile(pathImagen)
@@ -169,9 +168,52 @@ const mostrarImagen = async(req, res=response)=>{
 
 }
 
+
+const mostrarImagenImagenCloudinary = async(req, res=response)=>{
+    
+    const { id, coleccion } = req.params; 
+
+    let modelo;
+
+    switch (coleccion) {
+        case 'usuarios':
+            
+            modelo = await Usuario.findById(id)
+            if(!modelo){
+                return res.status(400).json({ msg:`no existe un usuario con el id ${id}`})
+            }
+
+            break;
+        case 'productos':
+        
+            modelo = await Producto.findById(id)
+            if(!modelo){
+                return res.status(400).json({ msg:`no existe un producto con el id ${id}`})
+            }
+
+            break;
+
+        default:
+            return res.status(500).json( { msg:'Se me olvido validar esto' } );
+    }
+
+    if( modelo.img ){
+        const pathImagen = modelo.img 
+
+        return res.json({pathImagen});
+    }
+
+    res.json({pathImagen:process.env.NO_IMG});
+
+}
+
+
+
+
 module.exports = {
     cargar_archivo,
     actualizarImagen,
     mostrarImagen,
-    actualizarImagenCloudinary
+    actualizarImagenCloudinary,
+    mostrarImagenImagenCloudinary
 }

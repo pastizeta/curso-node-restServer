@@ -62,6 +62,10 @@ const getProductoxID = async(req,res=response) =>{
                             .populate('usuario','nombre')
                             .populate('subcategoria','nombre');
 
+    if(!producto.img){
+        producto.img = process.env.NO_IMG;
+    }
+
     res.status(200).json({
         producto
     })
