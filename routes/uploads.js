@@ -24,6 +24,6 @@ router.get('/:coleccion/:id',[
     check('id','el id debe ser de mongo').isMongoId(),
     check('coleccion').custom( c => coleccionesPermitidas( c, ['usuarios','productos'] ) ),
     validarCampos
-],mostrarImagen)
+],mostrarImagenImagenCloudinary)
 
 module.exports = router;
