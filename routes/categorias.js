@@ -2,7 +2,7 @@ const {Router} = require('express');
 const { check } = require('express-validator');
 
 const { validarJWT,validarCampos,esAdminRol } = require('../middlewares');
-const { crearCategoria,getCategoriaID,getCategorias,actualizarCategoria,borrarCategoria } = require('../controllers/categorias');
+const { crearCategoria,getCategoriaID,getCategorias,actualizarCategoria,borrarCategoria,actualizarEstadoCategoria } = require('../controllers/categorias');
 const { existeCategoria } = require('../helpers/db-validators');
 
 const router = Router();
@@ -41,6 +41,14 @@ router.put('/:id',[
     check('id').custom(existeCategoria),
     validarCampos
 ],actualizarCategoria);
+
+//Actualizar el estado de un registro
+router.put('/estado/:id',[
+    validarJWT,
+    check('id','no es un id valido').isMongoId(),
+    check('id').custom(existeCategoria),
+    validarCampos
+],actualizarEstadoCategoria)
 
 
 // Borrar categoria solo si es admin, marcar estado de activo o inactvio

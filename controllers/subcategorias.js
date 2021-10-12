@@ -7,7 +7,8 @@ const { Subcategoria } = require('../models');
 const getsubCategorias = async(req, res = response) =>{
 
     const {limite=5,desde = 0} = req.query;
-    const query = {estado:true}
+    //const query = {estado:true}
+    const query = {}
 
     const [total,subcategorias] = await Promise.all([
         Subcategoria.countDocuments(query),
@@ -71,7 +72,7 @@ const crearsubCategoria = async(req, res = response) =>{
 const actualizarsubCategoria = async(req,res = response) =>{
 
     const  { id } = req.params;
-    const { _id,usuario,estado,...data } = req.body;
+    const { _id,usuario,...data } = req.body;
 
     data.nombre = data.nombre.toUpperCase();
     data.usuario = req.usuario._id;

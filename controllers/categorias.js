@@ -6,13 +6,14 @@ const Usuario = require("../models/usuario");
 const getCategorias = async(req, res = response) =>{
 
     const {limite=5,desde = 0} = req.query;
-    const query = {estado:true}
+    //const query = {estado:true}
+    const query = {}
 
     const [total,categorias] = await Promise.all([
         Categoria.countDocuments(query),
         Categoria.find(query)
         .populate('usuario','nombre')
-        .populate('subcategorias','nombre')
+        .populate('subcategorias')
         .skip(Number(desde))
         .limit(Number(limite))
     ]);
@@ -32,7 +33,7 @@ const getCategoriaID = async( req, res = response) =>{
 
     const categoria = await Categoria.findById(id)
                                      .populate('usuario','nombre')
-                                     .populate('subcategorias','nombre');
+                                     .populate('subcategorias','nombre','estado');
 
     res.json({categoria})
 }
@@ -74,7 +75,7 @@ const crearCategoria = async(req, res = response) =>{
 const actualizarCategoria = async(req,res = response) =>{
 
     const  { id } = req.params;
-    const { _id,usuario,estado,...data } = req.body;
+    const { _id,usuario,...data } = req.body;
 
     data.nombre = data.nombre.toUpperCase();
     data.usuario = req.usuario._id;
@@ -97,6 +98,29 @@ const actualizarCategoria = async(req,res = response) =>{
 
 }
 
+//Actualiza estado Categoria
+const actualizarEstadoCategoria = async(req,res = response) =>{
+    const  { id } = req.params;
+    const { estado } = req.body;
+
+    const categoriaBD = await Categoria.findOne({_id: id})
+
+    if(categoriaBD){
+
+        const categoria = await Categoria.findByIdAndUpdate(id,{estado},{new:true});
+
+        res.json({
+            categoria
+        })
+    }else{
+        return res.json({
+            msg:`La categoria con id ${categoriaBD._id} no existe`
+        });
+    }
+
+   
+}
+
 //Borrar Categoria - cambiar estado a false
 const borrarCategoria = async(req,res=response) =>{
 
@@ -114,5 +138,6 @@ module.exports = {
     getCategoriaID,
     getCategorias,
     actualizarCategoria,
-    borrarCategoria
+    borrarCategoria,
+    actualizarEstadoCategoria
 }
