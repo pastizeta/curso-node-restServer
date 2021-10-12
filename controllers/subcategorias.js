@@ -98,8 +98,8 @@ const borrarsubCategoria = async(req,res=response) =>{
 
     const {id} = req.params;
 
-    //const subcategoria = await Subcategoria.findByIdAndUpdate(id,{estado:false},{new:true});
-    const subcategoria = await Subcategoria.deleteOne({_id:id});
+    const subcategoria = await Subcategoria.findByIdAndUpdate(id,{estado:false},{new:true});
+    //const subcategoria = await Subcategoria.deleteOne({_id:id});
     res.json({ subcategoria })
 
 }
