@@ -33,7 +33,7 @@ const getCategoriaID = async( req, res = response) =>{
 
     const categoria = await Categoria.findById(id)
                                      .populate('usuario','nombre')
-                                     .populate('subcategorias','nombre','estado');
+                                     .populate('subcategorias');
 
     res.json({categoria})
 }
