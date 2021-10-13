@@ -7,7 +7,8 @@ const { getProductos,
         actualizaProducto,
         borrarProducto,
         getProductosxCategoria,
-        getProductosxsubcategoria } = require('../controllers/productos');
+        getProductosxsubcategoria,
+        getProductosxIDS } = require('../controllers/productos');
 
 const { validarJWT, validarCampos, esAdminRol } = require('../middlewares');
 const { existeCategoria,existeProductoxID,existesubCategoria } = require('../helpers/db-validators');
@@ -24,6 +25,13 @@ router.get('/:id',[
     check('id').custom(existeProductoxID),
     validarCampos
 ],getProductoxID)
+
+//obtiene productos por id_categoria y id_sub_categoria
+router.get('/:id_catego/:id_sub_catego',[
+    check('id_catego','no es un id de Mongo valido').isMongoId(),
+    check('id_sub_catego','no es un id de Mongo valido').isMongoId(),
+    validarCampos
+],getProductosxIDS)
 
 //inserta un nuevo producto en BD solo tendran acceso con token valido
 router.post('/',[

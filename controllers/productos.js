@@ -149,6 +149,7 @@ const getProductosxCategoria = async (req,res=response) =>{
 const getProductosxsubcategoria = async( req, res = response) =>{
     
     const { id } = req.params;
+    
 
     const productos = await Producto.find( { subcategoria: ObjectId(id), estado:true } )
                                     .populate('categoria','nombre')
@@ -160,6 +161,25 @@ const getProductosxsubcategoria = async( req, res = response) =>{
 
 }
 
+const getProductosxIDS = async (req,res=response) =>{
+    const { id_catego,id_sub_catego } = req.params;
+    const {limite =5, desde = 0} = req.query;
+    const query = {subcategoria:ObjectId(id_sub_catego),categoria:ObjectId(id_catego),estado:true}
+
+
+    const [ total,productos ]  = await Promise.all([
+        Producto.countDocuments(query),
+        Producto.find(query)
+        .skip(Number(desde))
+        .limit(Number(limite))
+    ]);
+
+    res.json({
+        total,
+        productos
+    })   
+}
+
 
 module.exports ={
     getProductos,
@@ -168,5 +188,6 @@ module.exports ={
     actualizaProducto,
     borrarProducto,
     getProductosxCategoria,
-    getProductosxsubcategoria
+    getProductosxsubcategoria,
+    getProductosxIDS
 }
